@@ -4,6 +4,6 @@ class forum_index
 {
 	public function main()
 	{
-		echo 'forum main()';
+		(new forum)->printPosts(); // TODO: Paginate
 	}
 }
