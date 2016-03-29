@@ -16,5 +16,5 @@ CREATE TABLE IF NOT EXISTS `forum_comments` (
   `layer` int(11) NOT NULL DEFAULT 0,
   `author` int(11) NOT NULL,
   `content` text NOT NULL,
-  PRIMARY KEY (`msg_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;

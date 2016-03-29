@@ -17,14 +17,27 @@ class forum
 			echo $cms->partial('postMin', ['post' => $post]);
 	}
 	
+	public function printComments($id)
+	{
+		echo '<h3>Comments</h3>';
+		$comments = (new \ForumComments)
+					->joinAuthorOnId('lf_users', ['display_name', 'email'])
+					->getAllByPost($id);
+					
+		foreach($comments as $comment)
+		{
+			include 'view/comment.php';
+		}
+	}
+	
 	/// TODO: Paginate comments
 	public function printThread($id)
-	{
+	{	
 		// print Original post of thread
 		$this->printOp($id);
 		
 		// print comments to this post
-		(new \lf\comments)->printComments();
+		$this->printComments($id);
 			
 		// return;
 		
@@ -41,22 +54,17 @@ class forum
 		return $this;
 	}
 	
-	
 	public function printOp($id)
 	{
-		pre($id);
-		
-		echo (new \LfUsers)->findById(39);
-		echo (new \ForumPosts)->findById($id);
-		
-		
+	
 		$post = (new \ForumPosts)
-					->filterById($id)
-					->joinAuthorOnId('lf_users', ['display_name', 'email'])
-					->debug()
-					->get();
-					pre($post);
+			->joinAuthorOnId('lf_users', ['display_name', 'email'])
+			->getById($id);
+		
+		echo (new \lf\cms)->partial('breadcrumb', ['post' => $post]);
+		
 		include 'view/threadOp.php';
+		
 		return $this;
 	}
 }
