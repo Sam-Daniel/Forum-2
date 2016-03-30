@@ -12,3 +12,4 @@
 		<?=$post['category'];?>
 	</div>
 </div>
+<hr />

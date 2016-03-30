@@ -9,5 +9,5 @@
 		</ul>
 	</div>
 </div>
-<p><?=$comment['content'];?></p>
+<p><?=(new Parsedown)->text($comment['content']);?></p>
 <hr />
