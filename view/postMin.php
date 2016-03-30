@@ -4,7 +4,7 @@
 	</div>
 	<div class="col-8">
 		<ul class="vlist">
-			<li><a href="<?=\lf\requestGet('ActionUrl');?>read/<?=$post['id'];?>/<?=urlencode($post['title']);?>"><?=$post['title'];?></a></li>
+			<li><a href="<?=\lf\requestGet('ActionUrl');?><?=$post['id'];?>-<?=urlencode($post['title']);?>"><?=$post['title'];?></a></li>
 			<li><?=$post['display_name'];?>, # views, # comments, Most recent by SOMEGUY SOMETIME</li>
 		</ul>
 	</div>

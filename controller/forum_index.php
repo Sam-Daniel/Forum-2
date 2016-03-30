@@ -4,6 +4,13 @@ class forum_index
 {
 	public function main()
 	{
+		$param = \lf\requestGet('param');
+		if( isset( $param[0] ) && preg_match('/^[0-9]+/', $param[0], $match) )
+		{
+			(new forum)->printThread($match[0]);
+			return;
+		}
+		
 		echo '<h2>Home</h2>';
 		echo '<h3>Recent Posts</h3>';
 		(new forum)->printRecent();
