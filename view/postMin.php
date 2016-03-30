@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-2">
-		<img src="http://placehold.it/100x100" alt="" />
+		<img src="http://www.gravatar.com/avatar/<?=md5($post['email']);?>?s=100" />
 	</div>
 	<div class="col-8">
 		<ul class="vlist">

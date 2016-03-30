@@ -10,11 +10,20 @@ class forum
 		
 		$posts = (new \ForumPosts)
 					->joinAuthorOnId('lf_users', ['display_name', 'email'])
+					->order('forum_posts.date', 'DESC')
 					->getAll();
 		
 		$cms = (new \lf\cms);
 		foreach($posts as $post)
 			echo $cms->partial('postMin', ['post' => $post]);
+			
+		if( (new \lf\user)->idFromSession() != 0)
+			include 'view/postform.php';
+		else
+		{
+			echo '<h4>Sign In</h4>';
+			(new \lf\template)->printLogin();
+		}
 	}
 	
 	public function printComments($id)
@@ -27,6 +36,14 @@ class forum
 		foreach($comments as $comment)
 		{
 			include 'view/comment.php';
+		}
+		
+		if( (new \lf\user)->idFromSession() != 0)
+			include 'view/commentform.php';
+		else
+		{
+			echo '<h4>Sign In</h4>';
+			(new \lf\template)->printLogin();
 		}
 	}
 	
