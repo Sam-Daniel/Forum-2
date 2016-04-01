@@ -5,7 +5,7 @@
 	<div class="col-11">
 		<ul class="vlist">
 			<li><?=$comment['display_name'];?></li>
-			<li><?=$comment['date'];?></li>
+			<li><a href="<?=\lf\requestGet('ActionUrl');?>commentreply/<?=$comment['id'];?>"><?=$comment['date'];?></a></li>
 		</ul>
 	</div>
 </div>
