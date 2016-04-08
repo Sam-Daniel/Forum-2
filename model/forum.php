@@ -1,8 +1,18 @@
 <?php
 
+namespace lf\apps;
+
+/**
+ * Gets forum thread data and prints forum views
+ */
 class forum
 {
+	private $comment_style = 'reddit';
+	
 	// TODO: Paginate
+	/**
+	 * print the recent most $count posts
+	 */
 	public function printRecent()
 	{
 		
@@ -24,6 +34,26 @@ class forum
 			echo '<h4>Sign In</h4>';
 			(new \lf\template)->printLogin();
 		}
+	}
+	
+	public function printProfile($id = 0)
+	{
+		if($id == 0)
+			// print my own profile
+			$id = (new \lf\user)->idFromSession();
+		
+		 $profile = (new \LfUsers)->byId($id)
+			->cols('id, email, display_name')
+			->loJoinIdOnUid( 'forum_profile', ['*'] )
+			->get();
+			
+		if( is_null( $profile ) )
+		{
+			echo 'no profile found';
+			return;
+		}
+		
+		include 'view/myprofile.php';
 	}
 	
 	public function newCommentFromPost()
@@ -68,6 +98,67 @@ class forum
 		return $this;
 	}
 	
+	/**
+	 * Reddit style
+	 */
+	public function printRecursedComments($id)
+	{
+		echo '<h3>Recursed Comments</h3>';
+		$recursedComments = (new \ForumComments)
+					 ->joinAuthorOnId('lf_users', ['display_name', 'email'])
+					 ->findByPost($id)
+					 ->matrix(['reply', 'id']);
+		
+		// $recursedComments = [];
+		// foreach($comments as $comment)
+			// $recursedComments[$comment['reply']][$comment['id']] = $comment;
+		// ->matrix(array)
+		
+		$localVariables = [
+			'recursedComments' 	=> $recursedComments,
+			'replyParent' 		=> 0
+		];
+		
+		echo $this->recurseComments($recursedComments, 0);
+		// recurse through comments
+		// echo (new \lf\cms)->partial(
+			// 'recurseComments', 
+			// $localVariables
+		// );
+		
+		
+		$this->printCommentForm($id);
+		
+		return $this;
+	}
+	
+	public function recurseComments($commentMatrix, $replyParent)
+	{
+		// $class = '';
+		// if($replyParent == 0)
+			$class = 'fvlist';
+		
+		ob_start();
+		echo '<ul class="'.$class.'">
+				<li>';
+				foreach($commentMatrix[$replyParent] as $comment)
+				{
+					// pre($comment['id']);
+					// pre($comment);
+					include 'view/comment.php';
+					
+					if( isset( $commentMatrix[$comment['id']] ) )
+					{
+						echo $this->recurseComments($commentMatrix, $comment['id']);		
+					}
+					
+					echo '<hr />';
+				}
+		echo '</li>
+			</ul>';
+		return ob_get_clean();
+	}
+	
 	public function printCommentForm($id, $reply = 0)
 	{
 		if( (new \lf\user)->idFromSession() != 0)
@@ -108,6 +199,12 @@ class forum
 		$comment = (new \ForumComments)
 			->joinAuthorOnId('lf_users', ['display_name', 'email'])
 			->getById($id);
+			
+		if($comment['reply'] == 0)
+			echo '<a href="'.\lf\requestGet('ActionUrl').'read/'.$comment['post'].'">Back to main post</a>';
+		else
+			echo '<a href="'.\lf\requestGet('ActionUrl').'commentreply/'.$comment['reply'].'">Go to parent comment</a>';
+		
 		include 'view/comment.php';
 		
 		return $this;
@@ -132,7 +229,14 @@ class forum
 		$this->printOp($id);
 		
 		// print comments to this post
-		$this->printComments($id);
+		if($this->comment_style == 'twitter')
+		{
+			$this->printComments($id);
+		}
+		else if($this->comment_style == 'reddit')
+		{
+			$this->printRecursedComments($id);
+		}
 			
 		return $this;
 	}

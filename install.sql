@@ -18,3 +18,11 @@ CREATE TABLE IF NOT EXISTS `forum_comments` (
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `forum_profile` (
+  `uid` int(11) NOT NULL,
+  `steam` varchar(128) NOT NULL DEFAULT "",
+  `youtube` varchar(128) NOT NULL DEFAULT "",
+  `twitch` varchar(128) NOT NULL DEFAULT "",
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

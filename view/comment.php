@@ -10,4 +10,3 @@
 	</div>
 </div>
 <p><?=(new Parsedown)->text($comment['content']);?></p>
-<hr />
